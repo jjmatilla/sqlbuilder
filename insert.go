@@ -23,6 +23,7 @@ type insertData struct {
 	Values            [][]interface{}
 	Suffixes          []Sqlizer
 	Select            *SelectBuilder
+	Output            []Sqlizer
 }
 
 func (d *insertData) Exec() (sql.Result, error) {
@@ -91,6 +92,11 @@ func (d *insertData) ToSql() (sqlStr string, args []interface{}, err error) {
 		sql.WriteString("(")
 		sql.WriteString(strings.Join(d.Columns, ","))
 		sql.WriteString(") ")
+	}
+
+	if len(d.Output) > 0 {
+		sql.WriteString("OUTPUT ")
+		args, err = appendToSql(d.Output, sql, " ", args)
 	}
 
 	if d.Select != nil {
