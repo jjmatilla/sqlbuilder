@@ -23,7 +23,7 @@ type insertData struct {
 	Values            [][]interface{}
 	Suffixes          []Sqlizer
 	Select            *SelectBuilder
-	Output            []Sqlizer
+	Outputs           []Sqlizer
 }
 
 func (d *insertData) Exec() (sql.Result, error) {
@@ -94,9 +94,13 @@ func (d *insertData) ToSql() (sqlStr string, args []interface{}, err error) {
 		sql.WriteString(") ")
 	}
 
-	if len(d.Output) > 0 {
+	if len(d.Outputs) > 0 {
 		sql.WriteString("OUTPUT ")
-		args, err = appendToSql(d.Output, sql, " ", args)
+		args, err = appendToSql(d.Outputs, sql, " ", args)
+		if err != nil {
+			return
+		}
+		sql.WriteString(" ")
 	}
 
 	if d.Select != nil {
@@ -240,6 +244,16 @@ func (b InsertBuilder) Prefix(sql string, args ...interface{}) InsertBuilder {
 // PrefixExpr adds an expression to the very beginning of the query
 func (b InsertBuilder) PrefixExpr(expr Sqlizer) InsertBuilder {
 	return builder.Append(b, "Prefixes", expr).(InsertBuilder)
+}
+
+// Output for sql server add output to insert of the query
+func (b InsertBuilder) Output(sql string, args ...interface{}) InsertBuilder {
+	return b.OutputExpr(Expr(sql, args...))
+}
+
+// OutputExpr adds an expression before Values int the query
+func (b InsertBuilder) OutputExpr(expr Sqlizer) InsertBuilder {
+	return builder.Append(b, "Outputs", expr).(InsertBuilder)
 }
 
 // Options adds keyword options before the INTO clause of the query.
