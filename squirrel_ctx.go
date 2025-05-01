@@ -1,6 +1,7 @@
+//go:build go1.8
 // +build go1.8
 
-package squirrel
+package sqlbuilder
 
 import (
 	"context"
@@ -42,7 +43,7 @@ type RunnerContext interface {
 }
 
 // WrapStdSqlCtx wraps a type implementing the standard SQL interface plus the context
-// versions of the methods with methods that squirrel expects.
+// versions of the methods with methods that sqlbuilder expects.
 func WrapStdSqlCtx(stdSqlCtx StdSqlCtx) RunnerContext {
 	return &stdsqlCtxRunner{stdSqlCtx}
 }

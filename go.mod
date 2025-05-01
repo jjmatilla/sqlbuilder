@@ -1,4 +1,4 @@
-module github.com/jjmatilla/squirrel
+module github.com/jjmatilla/sqlbuilder
 
 go 1.24.2
 

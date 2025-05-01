@@ -10,7 +10,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-  sqrl "github.com/Masterminds/squirrel"
+	sqrl "github.com/jjmatilla/sqlbuilder"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
@@ -19,9 +19,9 @@ import (
 
 const (
 	testSchema = `
-		CREATE TABLE squirrel_integration ( k INT, v TEXT )`
+		CREATE TABLE sqlbuilder_integration ( k INT, v TEXT )`
 	testData = `
-		INSERT INTO squirrel_integration VALUES
+		INSERT INTO sqlbuilder_integration VALUES
 			(1, 'foo'),
 			(3, 'bar'),
 			(2, 'foo'),
@@ -39,9 +39,9 @@ func TestMain(m *testing.M) {
 	flag.StringVar(&dataSource, "dataSource", "", "integration database data source")
 	flag.Parse()
 
-  if driver == "" {
-    driver = "sqlite3"
-  }
+	if driver == "" {
+		driver = "sqlite3"
+	}
 
 	if driver == "sqlite3" && dataSource == "" {
 		dataSource = ":memory:"
@@ -60,7 +60,7 @@ func TestMain(m *testing.M) {
 	}
 
 	defer func() {
-		_, err = db.Exec("DROP TABLE squirrel_integration")
+		_, err = db.Exec("DROP TABLE sqlbuilder_integration")
 		fmt.Printf("error removing test schema: %v\n", err)
 	}()
 
@@ -99,12 +99,12 @@ func assertVals(t *testing.T, s sqrl.SelectBuilder, expected ...string) {
 func TestSimpleSelect(t *testing.T) {
 	assertVals(
 		t,
-		sb.Select("v").From("squirrel_integration"),
+		sb.Select("v").From("sqlbuilder_integration"),
 		"foo", "bar", "foo", "baz")
 }
 
 func TestEq(t *testing.T) {
-	s := sb.Select("v").From("squirrel_integration")
+	s := sb.Select("v").From("sqlbuilder_integration")
 	assertVals(t, s.Where(sqrl.Eq{"k": 4}), "baz")
 	assertVals(t, s.Where(sqrl.NotEq{"k": 2}), "foo", "bar", "baz")
 	assertVals(t, s.Where(sqrl.Eq{"k": []int{1, 4}}), "foo", "baz")
@@ -116,19 +116,19 @@ func TestEq(t *testing.T) {
 }
 
 func TestIneq(t *testing.T) {
-	s := sb.Select("v").From("squirrel_integration")
+	s := sb.Select("v").From("sqlbuilder_integration")
 	assertVals(t, s.Where(sqrl.Lt{"k": 3}), "foo", "foo")
 	assertVals(t, s.Where(sqrl.Gt{"k": 3}), "baz")
 }
 
 func TestConj(t *testing.T) {
-	s := sb.Select("v").From("squirrel_integration")
+	s := sb.Select("v").From("sqlbuilder_integration")
 	assertVals(t, s.Where(sqrl.And{sqrl.Gt{"k": 1}, sqrl.Lt{"k": 4}}), "bar", "foo")
 	assertVals(t, s.Where(sqrl.Or{sqrl.Gt{"k": 3}, sqrl.Lt{"k": 2}}), "foo", "baz")
 }
 
 func TestContext(t *testing.T) {
-	s := sb.Select("v").From("squirrel_integration")
+	s := sb.Select("v").From("sqlbuilder_integration")
 	ctx := context.Background()
 	_, err := s.QueryContext(ctx)
 	assert.NoError(t, err)

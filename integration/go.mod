@@ -1,14 +1,13 @@
-module github.com/Masterminds/squirrel/integration
+module github.com/jjmatilla/go-sqlbuilder/integration
 
 go 1.12
 
 require (
-	github.com/Masterminds/squirrel v1.1.0
-	github.com/go-sql-driver/mysql v1.4.1
-	github.com/lib/pq v1.2.0
-	github.com/mattn/go-sqlite3 v1.13.0
-	github.com/stretchr/testify v1.4.0
-	google.golang.org/appengine v1.6.5 // indirect
+	github.com/jjmatilla/go-sqlbuilder v1.5.5
+	github.com/go-sql-driver/mysql v1.9.2
+	github.com/lib/pq v1.10.9
+	github.com/stretchr/testify v1.10.0
+	google.golang.org/appengine v1.6.8 // indirect
 )
 
-replace github.com/Masterminds/squirrel => ../
+replace github.com/jjmatilla/go-sqlbuilder => ../
