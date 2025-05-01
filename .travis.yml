@@ -26,8 +26,8 @@ script:
   - go test
   - cd integration
   - go test -args -driver sqlite3
-  - go test -args -driver mysql -dataSource travis@/go-sqlbuilder
-  - go test -args -driver postgres -dataSource 'postgres://postgres@localhost/go-sqlbuilder?sslmode=disable'
+  - go test -args -driver mysql -dataSource travis@/sqlbuilder
+  - go test -args -driver postgres -dataSource 'postgres://postgres@localhost/sqlbuilder?sslmode=disable'
   - go test -args -driver sqlserver -dataSource `sqlserver://localhost`
 
 notifications:

@@ -24,6 +24,7 @@ type selectData struct {
 	Limit             string
 	Offset            string
 	Suffixes          []Sqlizer
+	Top               int32
 }
 
 func (d *selectData) Exec() (sql.Result, error) {
@@ -79,6 +80,12 @@ func (d *selectData) toSqlRaw() (sqlStr string, args []interface{}, err error) {
 	}
 
 	sql.WriteString("SELECT ")
+
+	if d.Top > 0 {
+		top := fmt.Sprintf("%d ", d.Top)
+		sql.WriteString(" TOP ")
+		sql.WriteString(top)
+	}
 
 	if len(d.Options) > 0 {
 		sql.WriteString(strings.Join(d.Options, " "))
