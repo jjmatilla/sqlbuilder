@@ -409,3 +409,7 @@ func (b SelectBuilder) Suffix(sql string, args ...interface{}) SelectBuilder {
 func (b SelectBuilder) SuffixExpr(expr Sqlizer) SelectBuilder {
 	return builder.Append(b, "Suffixes", expr).(SelectBuilder)
 }
+// SuffixExpr adds an expression to the end of the query
+func (b SelectBuilder) Top(limit int32) SelectBuilder {
+	return builder.Append(b, "Top", expr).(SelectBuilder)
+}
