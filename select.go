@@ -411,6 +411,6 @@ func (b SelectBuilder) SuffixExpr(expr Sqlizer) SelectBuilder {
 }
 
 // SuffixExpr adds an expression to the end of the query
-func (b SelectBuilder) Top(limit int32) SelectBuilder {
+func (b SelectBuilder) Top(limit int) SelectBuilder {
 	return builder.Append(b, "Top", limit).(SelectBuilder)
 }
