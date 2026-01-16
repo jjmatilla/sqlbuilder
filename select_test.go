@@ -13,6 +13,7 @@ import (
 func TestSelectBuilderToSql(t *testing.T) {
 	subQ := Select("aa", "bb").From("dd")
 	b := Select("a", "b").
+		Top(55).
 		Prefix("WITH prefix AS ?", 0).
 		Distinct().
 		Columns("c").
@@ -45,7 +46,7 @@ func TestSelectBuilderToSql(t *testing.T) {
 
 	expectedSql :=
 		"WITH prefix AS ? " +
-			"SELECT DISTINCT a, b, c, IF(d IN (?,?,?), 1, 0) as stat_column, a > ?, " +
+			"SELECT TOP 55 DISTINCT a, b, c, IF(d IN (?,?,?), 1, 0) as stat_column, a > ?, " +
 			"(b IN (?,?,?)) AS b_alias, " +
 			"(SELECT aa, bb FROM dd) AS subq " +
 			"FROM e " +

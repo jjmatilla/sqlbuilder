@@ -24,7 +24,7 @@ type selectData struct {
 	Limit             string
 	Offset            string
 	Suffixes          []Sqlizer
-	Top               int
+	Top               string
 }
 
 func (d *selectData) Exec() (sql.Result, error) {
@@ -81,10 +81,9 @@ func (d *selectData) toSqlRaw() (sqlStr string, args []interface{}, err error) {
 
 	sql.WriteString("SELECT ")
 
-	if d.Top > 0 {
-		top := fmt.Sprintf("%d ", d.Top)
-		sql.WriteString(" TOP ")
-		sql.WriteString(top)
+	if len(d.Top) > 0 {
+		sql.WriteString("TOP ")
+		sql.WriteString(d.Top)
 	}
 
 	if len(d.Options) > 0 {
@@ -250,6 +249,11 @@ func (b SelectBuilder) PrefixExpr(expr Sqlizer) SelectBuilder {
 	return builder.Append(b, "Prefixes", expr).(SelectBuilder)
 }
 
+// Tpo set an expression to the end of the query
+func (b SelectBuilder) Top(limit int) SelectBuilder {
+	return builder.Set(b, "Top", fmt.Sprintf("%d ", limit)).(SelectBuilder)
+}
+
 // Distinct adds a DISTINCT clause to the query.
 func (b SelectBuilder) Distinct() SelectBuilder {
 	return b.Options("DISTINCT")
@@ -408,9 +412,4 @@ func (b SelectBuilder) Suffix(sql string, args ...interface{}) SelectBuilder {
 // SuffixExpr adds an expression to the end of the query
 func (b SelectBuilder) SuffixExpr(expr Sqlizer) SelectBuilder {
 	return builder.Append(b, "Suffixes", expr).(SelectBuilder)
-}
-
-// SuffixExpr adds an expression to the end of the query
-func (b SelectBuilder) Top(limit int) SelectBuilder {
-	return builder.Set(b, "Top", fmt.Sprintf("%d", limit)).(SelectBuilder)
 }
