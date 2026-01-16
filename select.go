@@ -24,7 +24,7 @@ type selectData struct {
 	Limit             string
 	Offset            string
 	Suffixes          []Sqlizer
-	Top               int32
+	Top               int
 }
 
 func (d *selectData) Exec() (sql.Result, error) {
